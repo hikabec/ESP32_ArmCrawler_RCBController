@@ -44,11 +44,11 @@ BLEUUID CHARACTERISTIC_UUID = BLEUUID((uint16_t)0xFFF1);  // RCBController Chara
 
 class MyServerCallbacks: public BLEServerCallbacks {
     void onConnect(BLEServer* pServer) {
-      printf("connectionCallback\n\r");
+      Serial.println("connectionCallback");
     };
 
     void onDisconnect(BLEServer* pServer) {
-      printf("disconnectionCallback\n\r");
+      Serial.println("disconnectionCallback");
     }
 };
 
@@ -56,37 +56,37 @@ class MyCallbacks: public BLECharacteristicCallbacks {
     void onWrite(BLECharacteristic *pCharacteristic) {
       std::string value = pCharacteristic->getValue();
 
-      if (value.length() >= 10) {
-          printf("Data received: length = %d, data = 0x",value.length());
-          for(int x=0; x < value.length(); x++) {
-              printf("%02x", value[x]);
-          }
+      if (value.length() > 0) {
+        Serial.print("Received Value: ");
+        for (int i = 0; i < value.length(); i++)
+          Serial.printf("%02x ", value[i]);
 
-          // Add
-          switch (value[1]) {
-            case 1: // UP
-              motor_forward(PIN_L1, PIN_L2);
-              motor_forward(PIN_R1, PIN_R2);
-              break;
-            case 2: // DOWN
-              motor_back(PIN_L1, PIN_L2);
-              motor_back(PIN_R1, PIN_R2);
-              break;
-            case 4: // RIGHT
-              motor_forward(PIN_L1, PIN_L2);
-              motor_back(PIN_R1, PIN_R2);
-              break;
-            case 8: // LEFT
-              motor_back(PIN_L1, PIN_L2);
-              motor_forward(PIN_R1, PIN_R2);
-              break;
-            case 0: // STOP
-              motor_stop(PIN_L1, PIN_L2);
-              motor_stop(PIN_R1, PIN_R2);
-              break;  
-          }
+        // Add
+        switch (value[1]) {
+          case 1: // UP
+            motor_forward(PIN_L1, PIN_L2);
+            motor_forward(PIN_R1, PIN_R2);
+            break;
+          case 2: // DOWN
+            motor_back(PIN_L1, PIN_L2);
+            motor_back(PIN_R1, PIN_R2);
+            break;
+          case 4: // RIGHT
+            motor_forward(PIN_L1, PIN_L2);
+            motor_back(PIN_R1, PIN_R2);
+            break;
+          case 8: // LEFT
+            motor_back(PIN_L1, PIN_L2);
+            motor_forward(PIN_R1, PIN_R2);
+            break;
+          case 0: // STOP
+            motor_stop(PIN_L1, PIN_L2);
+            motor_stop(PIN_R1, PIN_R2);
+            break;  
+        }
           
-          printf("\n\r");
+        Serial.println("");
+        
       }
     }
 };
